@@ -54,6 +54,7 @@ def main():
     parser.add_argument("--path", help="Path to dataset", required=True)
     args = parser.parse_args()
 
+    sns.set()
     ax_words = "words"
     ax_characters = "characters"
     if os.path.isdir(args.path):
