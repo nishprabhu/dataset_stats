@@ -7,7 +7,7 @@ import seaborn as sns
 from stats import Stats
 
 
-def get_stats_and_histograms(path):
+def get_stats_and_histograms(path, ax_words, ax_characters):
     """ Get histograms and LaTex tables containing dataset statistics """
     filename = os.path.basename(path)
     file_stats = Stats(path)
@@ -26,19 +26,25 @@ def get_stats_and_histograms(path):
     )
 
     # Plot the histograms
-    plt.figure("words")
-    ax_words_per_sample = sns.distplot(file_stats.words_per_sample)
-    plt.figure("characters")
-    ax_characters_per_word = sns.distplot(file_stats.characters_per_word)
-    return ax_words_per_sample, ax_characters_per_word
+    label = os.path.splitext(filename)[-1].split(".")[-1]
+    plt.figure(ax_words)
+    axlabel = "Number of words"
+    sns.distplot(file_stats.words_per_sample, axlabel=axlabel, label=label)
+    plt.figure(ax_characters)
+    axlabel = "Number of characters"
+    sns.distplot(file_stats.characters_per_word, axlabel=axlabel, label=label)
 
 
 def plot(ax_words, ax_characters, filename=""):
     """ Plot histograms """
-    plt.figure("words")
+    plt.figure(ax_words)
+    plt.title("Histogram of the number of words per sample")
+    plt.legend()
     plt.savefig("{}_words.png".format(filename))
 
-    plt.figure("characters")
+    plt.figure(ax_characters)
+    plt.title("Histogram of the number of characters per word")
+    plt.legend()
     plt.savefig("{}_characters.png".format(filename))
 
 
@@ -48,16 +54,18 @@ def main():
     parser.add_argument("--path", help="Path to dataset", required=True)
     args = parser.parse_args()
 
+    ax_words = "words"
+    ax_characters = "characters"
     if os.path.isdir(args.path):
         filenames = os.listdir(args.path)
         for filename in filenames:
             path = os.path.join(args.path, filename)
-            ax_words, ax_characters = get_stats_and_histograms(path)
+            get_stats_and_histograms(path, ax_words, ax_characters)
         name, _ = os.path.splitext(filename)
         plot(ax_words, ax_characters, filename=name)
     else:
         filename = os.path.basename(args.path)
-        ax_words, ax_characters = get_stats_and_histograms(args.path)
+        get_stats_and_histograms(args.path, ax_words, ax_characters)
         plot(ax_words, ax_characters, filename=filename)
 
 
