@@ -35,14 +35,11 @@ def get_stats_and_histograms(path):
 
 def plot(ax_words, ax_characters, filename=""):
     """ Plot histograms """
-    if isinstance(ax_words, list) and isinstance(ax_characters, list):
-        pass
-    else:
-        plt.figure("words")
-        plt.savefig("{}_words.png".format(filename))
+    plt.figure("words")
+    plt.savefig("{}_words.png".format(filename))
 
-        plt.figure("characters")
-        plt.savefig("{}_characters.png".format(filename))
+    plt.figure("characters")
+    plt.savefig("{}_characters.png".format(filename))
 
 
 def main():
@@ -53,12 +50,11 @@ def main():
 
     if os.path.isdir(args.path):
         filenames = os.listdir(args.path)
-        ax_words = []
-        ax_characters = []
         for filename in filenames:
-            ax1, ax2 = get_stats_and_histograms(os.path.join(args.path, filename))
-            ax_words.append(ax1)
-            ax_characters.append(ax2)
+            path = os.path.join(args.path, filename)
+            ax_words, ax_characters = get_stats_and_histograms(path)
+        name, _ = os.path.splitext(filename)
+        plot(ax_words, ax_characters, filename=name)
     else:
         filename = os.path.basename(args.path)
         ax_words, ax_characters = get_stats_and_histograms(args.path)
