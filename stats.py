@@ -3,6 +3,7 @@
 from collections import Counter
 import string
 import pandas as pd
+import seaborn as sns
 
 
 class Stats:
@@ -19,9 +20,10 @@ class Stats:
         self.num_punctuation = 0
 
         # Length histogram data
-        self._words_per_sample = []
-        self._characters_per_word = []
+        self.words_per_sample = []
+        self.characters_per_word = []
 
+        # Aggregated statistics
         self.dataframe = None
 
     def compute_statistics(self):
@@ -37,7 +39,7 @@ class Stats:
         words = sample.split(" ")
         num_words = len(words)
         self.num_words += num_words
-        self._words_per_sample.append(num_words)
+        self.words_per_sample.append(num_words)
         self.word_counts.update(words)
         for word in words:
             self.process_word(word)
@@ -46,7 +48,7 @@ class Stats:
         """ Compute statistics for a single word """
         num_characters = len(word)
         self.num_characters += num_characters
-        self._characters_per_word.append(num_characters)
+        self.characters_per_word.append(num_characters)
         for character in word:
             if character in string.punctuation:
                 self.num_punctuation += 1
