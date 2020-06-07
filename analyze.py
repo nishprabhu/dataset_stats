@@ -2,50 +2,87 @@
 
 import os
 import argparse
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from stats import Stats
 
 
-def get_stats_and_histograms(path, ax_words, ax_characters):
-    """ Get histograms and LaTex tables containing dataset statistics """
-    filename = os.path.basename(path)
-    file_stats = Stats(path)
-    file_stats.compute_statistics()
+class Statistics:
+    """ Class to save statistics in LaTex tables and histograms to png. """
 
-    # Save LaTex tables
-    caption = "Statistics of {} dataset".format(filename)
-    label = "tab:{}_stats".format(filename)
-    file_stats.dataframe.to_latex(
-        filename + ".tex",
-        header=False,
-        index=False,
-        float_format="%.2f",
-        caption=caption,
-        label=label,
-    )
+    def __init__(self, path):
+        self.path = path
+        self.name = None
 
-    # Plot the histograms
-    label = os.path.splitext(filename)[-1].split(".")[-1]
-    plt.figure(ax_words)
-    axlabel = "Number of words"
-    sns.distplot(file_stats.words_per_sample, axlabel=axlabel, label=label)
-    plt.figure(ax_characters)
-    axlabel = "Number of characters"
-    sns.distplot(file_stats.characters_per_word, axlabel=axlabel, label=label)
+        self.dataframes = []
+        self.ax_words = "words"
+        self.ax_characters = "characters"
 
+        if os.path.isdir(self.path):
+            self.process_folder(self.path)
+        else:
+            self.process_file(self.path)
 
-def plot(ax_words, ax_characters, filename=""):
-    """ Plot histograms """
-    plt.figure(ax_words)
-    plt.title("Histogram of the number of words per sample")
-    plt.legend()
-    plt.savefig("{}_words.png".format(filename))
+        # Save to disk
+        self.save_to_latex()
+        self.save_plots()
 
-    plt.figure(ax_characters)
-    plt.title("Histogram of the number of characters per word")
-    plt.legend()
-    plt.savefig("{}_characters.png".format(filename))
+    def process_folder(self, path):
+        """ Process all the files in the given folder """
+        filenames = os.listdir(path)
+        for filename in filenames:
+            self.process_file(os.path.join(path, filename))
+
+    def process_file(self, path):
+        """ Process a single file """
+        filename = os.path.basename(path)
+        self.name, ext = os.path.splitext(filename)
+        label = ext[1:]
+
+        # Get statistics
+        file_stats = Stats(path)
+        file_stats.compute_statistics()
+
+        file_stats.dataframe.columns = ["", label]
+        self.dataframes.append(file_stats.dataframe)
+
+        # Plot histograms
+        plt.figure(self.ax_words)
+        axlabel = "Number of words"
+        sns.distplot(file_stats.words_per_sample, axlabel=axlabel, label=label)
+
+        plt.figure(self.ax_characters)
+        axlabel = "Number of characters"
+        sns.distplot(file_stats.characters_per_word, axlabel=axlabel, label=label)
+
+    def save_to_latex(self):
+        """ Save the computed statistics to a .tex file """
+        dataframe = pd.concat(self.dataframes, axis=1).T.drop_duplicates().T
+        print(dataframe)
+        caption = "Statistics of {} dataset".format(self.name)
+        label = "tab:{}_stats".format(self.name)
+        dataframe.to_latex(
+            self.name + ".tex",
+            header=True,
+            index=False,
+            # float_format="%.2f",
+            caption=caption,
+            label=label,
+            na_rep="-",
+        )
+
+    def save_plots(self):
+        """ Save plots to disk """
+        plt.figure(self.ax_words)
+        plt.title("Histogram of the number of words per sample")
+        plt.legend()
+        plt.savefig(self.name + "_words.png")
+
+        plt.figure(self.ax_characters)
+        plt.title("Histogram of the number of characters per word")
+        plt.legend()
+        plt.savefig(self.name + "_characters.png")
 
 
 def main():
@@ -55,19 +92,8 @@ def main():
     args = parser.parse_args()
 
     sns.set()
-    ax_words = "words"
-    ax_characters = "characters"
-    if os.path.isdir(args.path):
-        filenames = os.listdir(args.path)
-        for filename in filenames:
-            path = os.path.join(args.path, filename)
-            get_stats_and_histograms(path, ax_words, ax_characters)
-        name, _ = os.path.splitext(filename)
-        plot(ax_words, ax_characters, filename=name)
-    else:
-        filename = os.path.basename(args.path)
-        get_stats_and_histograms(args.path, ax_words, ax_characters)
-        plot(ax_words, ax_characters, filename=filename)
+
+    statistics = Statistics(args.path)
 
 
 if __name__ == "__main__":
