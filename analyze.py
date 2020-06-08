@@ -47,7 +47,7 @@ class Statistics:
         """ Process a single file """
         filename = os.path.basename(path)
         self.name, ext = os.path.splitext(filename)
-        label = ext[1:]
+        label = ext[1:].title()
 
         # Get statistics
         file_stats = Stats(path)
