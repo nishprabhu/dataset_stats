@@ -77,13 +77,13 @@ class Stats:
         column_2 = [
             self.num_samples,
             least_words_per_sample,
-            average_words_per_sample,
+            float(format(average_words_per_sample, ".2f")),
             most_words_per_sample,
             least_characters_per_word,
-            average_characters_per_word,
+            float(format(average_characters_per_word, ".2f")),
             most_characters_per_word,
             num_unique_words,
-            percentage_of_punctuation,
+            float(format(percentage_of_punctuation, ".2f")),
         ]
         data_dict = {"column_1": column_1, "column_2": column_2}
         self.dataframe = pd.DataFrame(data_dict)
