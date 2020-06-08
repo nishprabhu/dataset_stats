@@ -4,8 +4,12 @@ Code to analyze a dataset and save dataset statistics and plot relevant histogra
 
 ## Statistics Computed:
 * Number of samples
+* Least number of words per sample
 * Average number of words per sample
+* Most number of words per sample
+* Least number of characters per word
 * Average number of characters per word
+* Most number of characters per word
 * Number of unique words (vocabulary size)
 * Percentage of characters that are punctuation
 
