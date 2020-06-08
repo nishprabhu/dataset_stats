@@ -55,21 +55,33 @@ class Stats:
 
     def get_dataframe(self):
         """ Return dataset statistics as a dataframe """
+        least_words_per_sample = min(self.words_per_sample)
         average_words_per_sample = self.num_words / self.num_samples
+        most_words_per_sample = max(self.words_per_sample)
+        least_characters_per_word = min(self.characters_per_word)
         average_characters_per_word = self.num_characters / self.num_words
+        most_characters_per_word = max(self.characters_per_word)
         num_unique_words = len(self.word_counts)
         percentage_of_punctuation = self.num_punctuation / self.num_characters
         column_1 = [
             "Number of samples",
+            "Least words per sample",
             "Average words per sample",
+            "Most words per sample",
+            "Least characters per word",
             "Average characters per word",
+            "Most characters per word",
             "Number of unique words",
             "Percentage of punctuation",
         ]
         column_2 = [
             self.num_samples,
+            least_words_per_sample,
             average_words_per_sample,
+            most_words_per_sample,
+            least_characters_per_word,
             average_characters_per_word,
+            most_characters_per_word,
             num_unique_words,
             percentage_of_punctuation,
         ]

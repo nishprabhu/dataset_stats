@@ -62,8 +62,9 @@ class Statistics:
         print(dataframe)
         caption = "Statistics of {} dataset".format(self.name)
         label = "tab:{}_stats".format(self.name)
+        save_path = os.path.join("tables", self.name + ".tex")
         dataframe.to_latex(
-            self.name + ".tex",
+            save_path,
             header=True,
             index=False,
             # float_format="%.2f",
@@ -77,12 +78,14 @@ class Statistics:
         plt.figure(self.ax_words)
         plt.title("Histogram of the number of words per sample")
         plt.legend()
-        plt.savefig(self.name + "_words.png")
+        save_path = os.path.join("histograms", self.name + "_words.png")
+        plt.savefig(save_path)
 
         plt.figure(self.ax_characters)
         plt.title("Histogram of the number of characters per word")
         plt.legend()
-        plt.savefig(self.name + "_characters.png")
+        save_path = os.path.join("histograms", self.name + "_characters.png")
+        plt.savefig(save_path)
 
 
 def main():
