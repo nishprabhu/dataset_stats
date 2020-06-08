@@ -69,7 +69,7 @@ class Statistics:
         """ Save the computed statistics to a .tex file """
         dataframe = pd.concat(self.dataframes, axis=1).T.drop_duplicates().T
         print(dataframe)
-        caption = "Statistics of {} dataset".format(self.name)
+        caption = "Statistics of the {} dataset".format(self.name)
         label = "tab:{}_stats".format(self.name)
         save_path = os.path.join(self.tables_path, self.name + ".tex")
         dataframe.to_latex(
