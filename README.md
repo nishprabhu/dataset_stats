@@ -21,11 +21,12 @@ Other stats like total number of words, total number of characters etc. are comp
 
 ## To analyze a dataset, run:
 ```bash
-python analyze.py --path <path_to_dataset_file_or_folder>
+python analyze.py --dataset_path <path_to_dataset_file_or_folder> --output_folder <path_to_output_folder>
 ```
 
-The --path argument takes either a file path or a folder path. If a file is passed, then the statistics for that file are computed and saved as a .tex file. The histograms are also plotted and saved. 
---path should only point to a folder if the folder contains two files of the same dataset, i.e. the source and target files for sequence-to-sequence tasks. In this case, the statistics of the two files are saved in the same table, and the histograms are plotted in the same figure. 
+The --dataset_path argument takes either a file path or a folder path. If a file is passed, then the statistics for that file are computed and saved as a .tex file. The histograms are also plotted and saved. 
+--dataset_path should only point to a folder if the folder contains two files of the same dataset, i.e. the source and target files for sequence-to-sequence tasks. In this case, the statistics of the two files are saved in the same table, and the histograms are plotted in the same figure. 
+All outputs are saved in the path provided via --output_folder. If no path is provided, then outputs are saved in the current directory.
 
 The input dataset files should be named with the source/target information in the extensions. For example, for the wmt machine translation dataset, the files containing the German and English sentences should be named as follows:
 * wmt.german
